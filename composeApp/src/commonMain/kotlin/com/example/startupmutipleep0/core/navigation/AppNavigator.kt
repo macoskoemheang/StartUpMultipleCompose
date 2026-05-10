@@ -22,6 +22,11 @@ class AppNavigator {
         introPage = (introPage + 1).coerceAtMost(totalPages - 1)
     }
 
+    fun setIntroPage(page: Int, totalPages: Int) {
+        if (route != AppRoute.Intro || totalPages <= 0) return
+        introPage = page.coerceIn(0, totalPages - 1)
+    }
+
     fun previousIntroPage() {
         introPage = (introPage - 1).coerceAtLeast(0)
     }

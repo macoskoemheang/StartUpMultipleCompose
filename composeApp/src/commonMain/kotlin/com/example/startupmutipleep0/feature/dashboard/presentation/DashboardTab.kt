@@ -4,7 +4,7 @@ enum class DashboardTab(
     val title: String,
     val icon: String,
 ) {
-    Home("Home", "H"),
-    Activity("Activity", "A"),
+    Home("Trips", "\$"),
+    Activity("Spending", "%"),
     Settings("Settings", "S"),
 }

@@ -28,6 +28,7 @@ fun App() {
                 currentPage = navigator.introPage,
                 onNext = { totalPages -> navigator.nextIntroPage(totalPages) },
                 onBack = navigator::previousIntroPage,
+                onPageChanged = { page, totalPages -> navigator.setIntroPage(page, totalPages) },
                 onFinish = navigator::finishIntro,
             )
             AppRoute.Login -> LoginScreen(

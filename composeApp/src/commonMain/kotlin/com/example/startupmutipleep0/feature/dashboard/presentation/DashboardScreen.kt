@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -95,11 +97,26 @@ private fun GlobalBottomNavigation(
     selectedTab: DashboardTab,
     onTabSelected: (DashboardTab) -> Unit,
 ) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+    Surface(
+        tonalElevation = 3.dp,
+        shadowElevation = 6.dp,
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surface,
+            tonalElevation = 0.dp,
+        ) {
         DashboardTab.entries.forEach { tab ->
             NavigationBarItem(
                 selected = selectedTab == tab,
                 onClick = { onTabSelected(tab) },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 icon = {
                     Surface(
                         modifier = Modifier.size(28.dp),
@@ -127,6 +144,7 @@ private fun GlobalBottomNavigation(
                 label = { Text(tab.title) },
             )
         }
+        }
     }
 }
 
@@ -138,8 +156,8 @@ private fun DashboardHomeScreen(
 ) {
     DashboardPage(paddingValues = paddingValues) {
         DashboardHeader(
-            title = "Dashboard",
-            subtitle = "Your clean app shell is ready for real features.",
+            title = "Current Trip",
+            subtitle = "Track your travel budget before small expenses become surprises.",
             trailing = {
                 TextButton(onClick = onLogout) {
                     Text("Logout")
@@ -150,23 +168,25 @@ private fun DashboardHomeScreen(
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             MetricCard(
                 modifier = Modifier.weight(1f),
-                value = "7",
-                label = "Intro pages",
+                value = "\$1,240",
+                label = "Trip budget",
             )
             MetricCard(
                 modifier = Modifier.weight(1f),
-                value = "3",
-                label = "Bottom tabs",
+                value = "\$385",
+                label = "Spent",
             )
         }
 
+        TripBudgetCard()
+
         FeatureCard(
-            title = "Production structure",
-            body = "Navigation, authentication entry, dashboard shell, API, localization, and theme controls are separated into clear feature areas.",
+            title = "Smart trip categories",
+            body = "Group expenses by hotel, food, transport, tickets, shopping, and emergency costs.",
         )
         FeatureCard(
-            title = "Settings moved",
-            body = "The previous API demo, language switcher, and dark mode controls now live inside the Settings tab.",
+            title = "Personalize your travel workspace",
+            body = "Language, dark mode, platform info, and the API demo are available in Settings.",
             action = "Open settings",
             onAction = onOpenSettings,
         )
@@ -179,17 +199,84 @@ private fun DashboardActivityScreen(
 ) {
     DashboardPage(paddingValues = paddingValues) {
         DashboardHeader(
-            title = "Activity",
-            subtitle = "A clean placeholder for logs, notifications, tasks, or reports.",
+            title = "Spending",
+            subtitle = "Review trip expenses by category and spot budget pressure early.",
         )
         FeatureCard(
-            title = "API workflow",
-            body = "Remote data should flow through Ktor, repository, use case, ViewModel, then UI state.",
+            title = "Today",
+            body = "Breakfast \$12, city train \$4, museum ticket \$18, dinner deposit \$25.",
         )
         FeatureCard(
-            title = "Navigation protection",
-            body = "Routes are typed, repeated bottom-tab taps are ignored, intro pages are bounded, and dashboard access only opens from login.",
+            title = "This trip",
+            body = "Food is currently the highest category. Transport is still under plan.",
         )
+        FeatureCard(
+            title = "Navigation safety",
+            body = "Intro pages are bounded, repeated tab taps are ignored, and dashboard access opens from login only.",
+        )
+    }
+}
+
+@Composable
+private fun TripBudgetCard() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(
+                        text = "Cambodia Weekend",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "3 days · 2 travelers",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.78f),
+                    )
+                }
+                Text(
+                    text = "69%",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.22f),
+                        shape = RoundedCornerShape(8.dp),
+                    ),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.31f)
+                        .height(8.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            shape = RoundedCornerShape(8.dp),
+                        ),
+                )
+            }
+            Text(
+                text = "\$855 remaining from the planned budget",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.84f),
+            )
+        }
     }
 }
 

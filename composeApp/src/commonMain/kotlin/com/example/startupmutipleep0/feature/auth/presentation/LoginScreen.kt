@@ -10,10 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -50,8 +55,9 @@ fun LoginScreen(
         Surface(
             modifier = Modifier
                 .safeContentPadding()
+                .verticalScroll(rememberScrollState())
                 .padding(20.dp)
-                .widthIn(max = 460.dp)
+                .widthIn(max = 500.dp)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline.copy(alpha = 0.18f),
@@ -65,23 +71,61 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "Welcome Back",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Sign in to continue to your clean multiplatform dashboard.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
+                Surface(
+                    modifier = Modifier.size(64.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "\$",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = "Welcome to Trip Expense",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = "Sign in to manage budgets, split costs, and review trip spending in one clean workspace.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    LoginBenefitCard(
+                        modifier = Modifier.weight(1f),
+                        value = "Fast",
+                        label = "Expense entry",
+                    )
+                    LoginBenefitCard(
+                        modifier = Modifier.weight(1f),
+                        value = "Clear",
+                        label = "Trip budget",
+                    )
+                }
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email or phone") },
+                    label = { Text("Email") },
+                    placeholder = { Text("traveler@example.com") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
@@ -90,6 +134,7 @@ fun LoginScreen(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
+                    placeholder = { Text("Enter your password") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -108,7 +153,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onLogin,
                 ) {
-                    Text("Login")
+                    Text("Open Dashboard")
                 }
 
                 Row(
@@ -120,10 +165,42 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     TextButton(onClick = onSignUp) {
-                        Text("Sign up")
+                        Text("Create trip account")
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun LoginBenefitCard(
+    modifier: Modifier,
+    value: String,
+    label: String,
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.76f),
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

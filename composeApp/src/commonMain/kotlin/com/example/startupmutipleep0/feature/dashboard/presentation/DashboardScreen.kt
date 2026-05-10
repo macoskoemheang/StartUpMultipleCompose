@@ -1,0 +1,324 @@
+package com.example.startupmutipleep0.feature.dashboard.presentation
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.example.startupmutipleep0.core.localization.AppLanguage
+import com.example.startupmutipleep0.core.theme.ThemeMode
+import com.example.startupmutipleep0.feature.home.presentation.HomeScreen
+import com.example.startupmutipleep0.feature.home.presentation.HomeViewModel
+
+@Composable
+fun DashboardScreen(
+    platformName: String,
+    viewModel: HomeViewModel,
+    language: AppLanguage,
+    themeMode: ThemeMode,
+    onLanguageChange: (AppLanguage) -> Unit,
+    onThemeModeChange: (ThemeMode) -> Unit,
+    onLogout: () -> Unit,
+) {
+    var selectedTab by remember { mutableStateOf(DashboardTab.Home) }
+
+    Scaffold(
+        bottomBar = {
+            GlobalBottomNavigation(
+                selectedTab = selectedTab,
+                onTabSelected = { tab ->
+                    if (selectedTab != tab) {
+                        selectedTab = tab
+                    }
+                },
+            )
+        },
+    ) { paddingValues ->
+        when (selectedTab) {
+            DashboardTab.Home -> DashboardHomeScreen(
+                paddingValues = paddingValues,
+                onOpenSettings = { selectedTab = DashboardTab.Settings },
+                onLogout = onLogout,
+            )
+            DashboardTab.Activity -> DashboardActivityScreen(paddingValues = paddingValues)
+            DashboardTab.Settings -> Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            ) {
+                HomeScreen(
+                    platformName = platformName,
+                    viewModel = viewModel,
+                    language = language,
+                    themeMode = themeMode,
+                    onLanguageChange = onLanguageChange,
+                    onThemeModeChange = onThemeModeChange,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun GlobalBottomNavigation(
+    selectedTab: DashboardTab,
+    onTabSelected: (DashboardTab) -> Unit,
+) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+        DashboardTab.entries.forEach { tab ->
+            NavigationBarItem(
+                selected = selectedTab == tab,
+                onClick = { onTabSelected(tab) },
+                icon = {
+                    Surface(
+                        modifier = Modifier.size(28.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = if (selectedTab == tab) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        },
+                        contentColor = if (selectedTab == tab) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = tab.icon,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                },
+                label = { Text(tab.title) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun DashboardHomeScreen(
+    paddingValues: PaddingValues,
+    onOpenSettings: () -> Unit,
+    onLogout: () -> Unit,
+) {
+    DashboardPage(paddingValues = paddingValues) {
+        DashboardHeader(
+            title = "Dashboard",
+            subtitle = "Your clean app shell is ready for real features.",
+            trailing = {
+                TextButton(onClick = onLogout) {
+                    Text("Logout")
+                }
+            },
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            MetricCard(
+                modifier = Modifier.weight(1f),
+                value = "7",
+                label = "Intro pages",
+            )
+            MetricCard(
+                modifier = Modifier.weight(1f),
+                value = "3",
+                label = "Bottom tabs",
+            )
+        }
+
+        FeatureCard(
+            title = "Production structure",
+            body = "Navigation, authentication entry, dashboard shell, API, localization, and theme controls are separated into clear feature areas.",
+        )
+        FeatureCard(
+            title = "Settings moved",
+            body = "The previous API demo, language switcher, and dark mode controls now live inside the Settings tab.",
+            action = "Open settings",
+            onAction = onOpenSettings,
+        )
+    }
+}
+
+@Composable
+private fun DashboardActivityScreen(
+    paddingValues: PaddingValues,
+) {
+    DashboardPage(paddingValues = paddingValues) {
+        DashboardHeader(
+            title = "Activity",
+            subtitle = "A clean placeholder for logs, notifications, tasks, or reports.",
+        )
+        FeatureCard(
+            title = "API workflow",
+            body = "Remote data should flow through Ktor, repository, use case, ViewModel, then UI state.",
+        )
+        FeatureCard(
+            title = "Navigation protection",
+            body = "Routes are typed, repeated bottom-tab taps are ignored, intro pages are bounded, and dashboard access only opens from login.",
+        )
+    }
+}
+
+@Composable
+private fun DashboardPage(
+    paddingValues: PaddingValues,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        Column(
+            modifier = Modifier
+                .safeContentPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp)
+                .widthIn(max = 720.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            content = content,
+        )
+    }
+}
+
+@Composable
+private fun DashboardHeader(
+    title: String,
+    subtitle: String,
+    trailing: (@Composable () -> Unit)? = null,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        trailing?.invoke()
+    }
+}
+
+@Composable
+private fun MetricCard(
+    modifier: Modifier,
+    value: String,
+    label: String,
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun FeatureCard(
+    title: String,
+    body: String,
+    action: String? = null,
+    onAction: (() -> Unit)? = null,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.18f),
+                shape = RoundedCornerShape(8.dp),
+            ),
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (action != null && onAction != null) {
+                TextButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = onAction,
+                ) {
+                    Text(action)
+                }
+            }
+        }
+    }
+}

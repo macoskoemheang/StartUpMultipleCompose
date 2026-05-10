@@ -1,0 +1,73 @@
+package com.example.startupmutipleep0.core.localization
+
+data class AppStrings(
+    val appName: String,
+    val headline: String,
+    val subtitle: String,
+    val platform: String,
+    val architecture: String,
+    val apiStatus: String,
+    val loadedFromApi: String,
+    val refresh: String,
+    val loading: String,
+    val error: String,
+    val light: String,
+    val dark: String,
+    val language: String,
+    val theme: String,
+    val cleanFlow: String,
+)
+
+fun stringsFor(language: AppLanguage): AppStrings = when (language) {
+    AppLanguage.EN -> AppStrings(
+        appName = "Startup Multiple",
+        headline = "Clean Multiplatform Starter",
+        subtitle = "Shared Compose UI with domain, data, and presentation layers.",
+        platform = "Platform",
+        architecture = "Architecture",
+        apiStatus = "API status",
+        loadedFromApi = "Loaded from API",
+        refresh = "Refresh",
+        loading = "Loading",
+        error = "Something went wrong",
+        light = "Light",
+        dark = "Dark",
+        language = "Language",
+        theme = "Theme",
+        cleanFlow = "UI -> ViewModel -> UseCase -> Repository -> RemoteDataSource -> Ktor",
+    )
+    AppLanguage.KH -> AppStrings(
+        appName = "Startup Multiple",
+        headline = "គម្រោង Multiplatform ស្អាត",
+        subtitle = "Compose UI រួមជាមួយស្រទាប់ domain, data និង presentation។",
+        platform = "ប្រព័ន្ធ",
+        architecture = "រចនាសម្ព័ន្ធ",
+        apiStatus = "ស្ថានភាព API",
+        loadedFromApi = "បានទាញពី API",
+        refresh = "ផ្ទុកម្ដងទៀត",
+        loading = "កំពុងផ្ទុក",
+        error = "មានបញ្ហាកើតឡើង",
+        light = "ភ្លឺ",
+        dark = "ងងឹត",
+        language = "ភាសា",
+        theme = "រូបរាង",
+        cleanFlow = "UI -> ViewModel -> UseCase -> Repository -> RemoteDataSource -> Ktor",
+    )
+    AppLanguage.CH -> AppStrings(
+        appName = "Startup Multiple",
+        headline = "简洁的多平台起点",
+        subtitle = "共享 Compose UI，并拆分 domain、data、presentation 层。",
+        platform = "平台",
+        architecture = "架构",
+        apiStatus = "API 状态",
+        loadedFromApi = "已从 API 加载",
+        refresh = "刷新",
+        loading = "加载中",
+        error = "出现问题",
+        light = "浅色",
+        dark = "深色",
+        language = "语言",
+        theme = "主题",
+        cleanFlow = "UI -> ViewModel -> UseCase -> Repository -> RemoteDataSource -> Ktor",
+    )
+}
